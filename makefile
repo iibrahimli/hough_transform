@@ -6,7 +6,7 @@
 ##                           ##
 ###############################
 
-TARGET_EXEC ?= flt
+TARGET_EXEC ?= hough
 
 BUILD_DIR ?= build
 SRC_DIRS ?= src
@@ -18,16 +18,11 @@ DEPS := $(OBJS:.o=.d)
 INC_DIRS := $(shell find $(SRC_DIRS) -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
-CPPFLAGS ?= $(INC_FLAGS) -std=c++17 -O3 -g -MMD -MP
+CPPFLAGS ?= $(INC_FLAGS) -std=c++17 -g -O3
 LDFLAGS ?= -pthread
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	$(CXX) $(OBJS) -o $@ $(LDFLAGS)
-
-# C sources
-$(BUILD_DIR)/%.c.o: %.c
-	$(MKDIR_P) $(dir $@)
-	$(CC) $(CPPFLAGS) -c $< -o $@
 
 # C++ sources
 $(BUILD_DIR)/%.cpp.o: %.cpp

@@ -52,7 +52,7 @@ struct BMP_image {
 
     BMP_file_header   file_h;
     BMP_info_header   info_h;
-    pixel *           data{nullptr};        // stores pixels in column-major order WITHOUT padding
+    pixel            *data{nullptr};         // stores pixels in column-major order WITHOUT padding
 
 
     // no default constructor
@@ -119,9 +119,13 @@ struct BMP_image {
         delete[] data;
     }
 
-
-    // pixel access is similar to Fortran array indexing, but is 0-indexed
-    // for example: a(2, 5) is 3rd pixel of 6th row
+    /*
+          --> x
+        |
+        V
+        y
+    */
+    // ex: a(2, 5) is 3rd pixel of 6th row
 
     // read-only access to pixel at location (i, j)
     inline const pixel& ploc(unsigned int i, unsigned int j) const {
@@ -237,6 +241,49 @@ struct BMP_image {
 
         write_h_p(out);
         out.close();
+    }
+
+
+    // draws a line passing through X_START, Y_START and X_END, Y_END
+    // TODO implement thickness
+    void draw_line(int x_start, int y_start, int x_end, int y_end, pixel color = RED, float thickness = 1.0){
+        float len = sqrt((float) pow(x_end - x_start, 2) + pow(y_end - y_start, 2));
+        float i = x_start, j = y_start;
+        float l = 0.0f;
+
+        while(l <= 1){
+            data[(int)j*info_h.width + (int)i] = color;
+            i += (x_end - x_start) / len;
+            j += (y_end - y_start) / len;
+            l += 1 / len;
+        }
+    }
+
+
+    // draw the line y = Mx + C
+    void draw_line(float m, float c, pixel color = RED, float thickness = 1.0){
+
+        int x_start = 0, x_end = info_h.width-1, y_start = m*x_start + c, y_end = m*x_end + c;
+
+        // clip if necessary
+        if(y_start >= info_h.height){
+            y_start = info_h.height-1;
+            x_start = (y_start - c) / m;
+        }
+        if(y_end >= info_h.height){
+            y_end = info_h.height-1;
+            x_end = (y_end - c) / m;
+        }
+        if(y_start < 0){
+            y_start = 0;
+            x_start = (y_start - c) / m;
+        }
+        if(y_end < 0){
+            y_end = 0;
+            x_end = (y_end - c) / m;            
+        } 
+
+        draw_line(x_start, y_start, x_end, y_end, color, thickness);
     }
 
 
