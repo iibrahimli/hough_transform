@@ -2,5 +2,11 @@
 #define __HOUGH_HPP
 
 
+class hough_transform{
+
+    
+
+};
+
 
 #endif
