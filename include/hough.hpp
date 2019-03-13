@@ -35,7 +35,7 @@ class hough_transform{
                    _img.ploc(i, j).g > EDGE_THRESHOLD ||
                    _img.ploc(i, j).b > EDGE_THRESHOLD)
                     for(float th = -PI/2; th < PI/2; th += PI/_theta_nsteps){
-                        
+
                     }
             }
         }
@@ -49,7 +49,7 @@ private:
     const BMP_image&                     _img;
     int                                  _r_nsteps;
     int                                  _theta_nsteps;
-    float                                  _vote_th;
+    float                                _vote_th;
     std::vector<std::pair<float, float>> _lines;
     int                                 *_accumulator;
 
